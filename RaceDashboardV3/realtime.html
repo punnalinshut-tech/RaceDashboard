@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RacePoint Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* =========================================
+           RESET
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+        }
+
+        body {
+            font-family:
+                "Noto Sans Thai",
+                sans-serif;
+
+            background: #24388f;
+            color: #ffffff;
+        }
+
+
+        /* =========================================
+           MAIN SCREEN
+        ========================================= */
+
+        .dashboard {
+            position: relative;
+
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+
+            background-image:
+                url("/images/system/background-portrait.jpg");
+
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        @media (orientation: landscape) {
+            .dashboard {
+                background-image:
+                    url("/images/system/BG_Desktop.png");
+            }
+        }
+
+        /* =========================================
+           CONTAINER
+        ========================================= */
+
+        .container {
+            position: relative;
+            z-index: 10;
+
+            width: min(92%, 1000px);
+            height: 100%;
+
+            margin: 0 auto;
+
+            padding:
+                clamp(28px, 4vh, 70px) 0 clamp(24px, 3vh, 50px);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .dashboard-header {
+            flex-shrink: 0;
+
+            text-align: center;
+
+            margin-top:
+                clamp(300px, 12vh, 400px);
+
+            margin-bottom:
+                clamp(20px, 3vh, 42px);
+        }
+
+        /* =========================================
+           DISTANCE BADGE
+        ========================================= */
+
+        .distance-wrapper {
+            display: flex;
+            justify-content: center;
+
+            margin-bottom:
+                clamp(18px, 2.8vh, 36px);
+        }
+
+        .distance-badge {
+            min-width: min(80%, 720px);
+            padding: clamp(14px, 2vh, 24px) clamp(30px, 5vw, 60px);
+            border: clamp(20px, 1vw, 30px) solid #ffffff;
+            border-radius: 999px;
+            background: #f55abe;
+            font-size: clamp(64px, 5vw, 80px);
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        /* =========================================
+           CATEGORY
+        ========================================= */
+
+        .category-wrapper {
+            text-align: center;
+        }
+
+        .category-type {
+            font-size:
+                clamp(70px, 7vw, 94.76px);
+
+            font-weight: 800;
+
+            line-height: 1.15;
+
+            margin-bottom: 4px;
+        }
+
+        .category-title {
+            margin: 0;
+
+            min-height: 1.2em;
+
+            font-size:
+                clamp(70px, 7vw, 94.76px);
+
+            line-height: 1.15;
+
+            font-weight: 800;
+        }
+
+        /* =========================================
+           RESULTS AREA
+        ========================================= */
+
+        .results {
+            flex: 1;
+
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap:
+                clamp(10px, 1.2vh, 20px);
+        }
+
+
+        /* =========================================
+           RESULT CARD
+        ========================================= */
+
+        .result-card {
+            position: relative;
+
+            flex: 1 1 0;
+
+            min-height: 0;
+
+            display: grid;
+
+            grid-template-columns:
+                clamp(80px, 10vw, 130px) clamp(100px, 13vw, 160px) minmax(0, 1fr);
+
+            align-items: center;
+
+            gap:
+                clamp(10px, 2vw, 24px);
+
+            padding:
+                clamp(16px, 1.8vh, 28px) clamp(20px, 3vw, 42px);
+
+            border-radius:
+                clamp(14px, 1.8vw, 22px);
+
+            background:
+                linear-gradient(100deg,
+                    #ffd95b 0%,
+                    #ffb339 43%,
+                    #ff721c 100%);
+
+            overflow: hidden;
+        }
+
+
+        /* Highlight แสงด้านขวา */
+
+        .result-card::after {
+            content: "";
+
+            position: absolute;
+
+            right: 7px;
+            top: 17%;
+
+            width: 7px;
+            height: 66%;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255, 255, 255, 0.6);
+
+            filter: blur(4px);
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================
+           OVERALL LAYOUT (LayoutMode = overall)
+        ========================================= */
+
+        .results.overall-mode {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .overall-card {
+            position: relative;
+            width: min(92%, 1020px);
+            min-height: clamp(660px, 50vh, 900px);
+            margin: clamp(168px, 18vw, 264px) auto auto auto;
+            padding: clamp(156px, 18vw, 252px) clamp(29px, 4.2vw, 67px) clamp(44px, 5.4vh, 77px);
+            border-radius: clamp(28px, 4.2vw, 52px);
+            background: linear-gradient(135deg, #ffd95b 0%, #ffb339 45%, #ff721c 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        }
+
+        /* Highlight แสงด้านขวา */
+        .overall-card::after {
+            content: "";
+            position: absolute;
+            right: 12px;
+            top: 20%;
+            width: 10px;
+            height: 60%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.55);
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        /* รูปโปรไฟล์ขนาดใหญ่ตรงกลาง ยื่นออกไปด้านบนครึ่งหนึ่ง */
+        .overall-profile-wrapper {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .overall-profile-image {
+            width: clamp(316px, 37vw, 528px);
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            object-fit: cover;
+            border: clamp(10px, 1.2vw, 19px) solid #ffffff;
+            background: #eef8ff;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .overall-bib {
+            font-size: clamp(132px, 6.6vw, 211px);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: clamp(18px, 1.4vh, 30px);
+            text-shadow: 2px 3px 2px rgba(0, 0, 0, 0.22);
+            letter-spacing: 1px;
+        }
+
+        .overall-name {
+            font-size: clamp(68px, 6.6vw, 127px);
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.25;
+            margin-bottom: clamp(20px, 3vh, 44px);
+            text-shadow: 2px 3px 2px rgba(0, 0, 0, 0.22);
+        }
+
+        .overall-time {
+            font-size: clamp(79px, 10.5vw, 158px);
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            text-shadow: 3px 5px 3px rgba(0, 0, 0, 0.28);
+        }
+
+
+        /* =========================================
+           RANK
+        ========================================= */
+
+        .rank {
+            text-align: center;
+
+            font-size:
+                clamp(120px, 9vw, 150px);
+
+            line-height: 0.9;
+
+            font-weight: 900;
+
+            color: #ffffff;
+
+            text-shadow:
+                5px 7px 4px rgba(0, 0, 0, 0.23);
+        }
+
+
+        /* Rank 1 */
+
+        .result-card.rank-1 .rank {
+            color: #ff5261;
+            text-shadow: 2.5px 2.5px 0px #ffffff, 3px 3px 3px rgba(0, 0, 0, 0.18);
+        }
+
+
+        /* Rank 2 */
+
+        .result-card.rank-2 .rank {
+            color: #be72ff;
+            text-shadow: 2.5px 2.5px 0px #5e17eb, 3px 3px 3px rgba(0, 0, 0, 0.22);
+        }
+
+
+        /* Rank 3 */
+
+        .result-card.rank-3 .rank {
+            color: #58d8ff;
+            text-shadow: 2.5px 2.5px 0px #1800ad, 3px 3px 3px rgba(0, 0, 0, 0.22);
+        }
+
+
+        /* =========================================
+           PROFILE IMAGE
+        ========================================= */
+
+        .profile-wrapper {
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-image {
+            width:
+                clamp(86px, 12vw, 140px);
+            margin-left: 0;
+            aspect-ratio: 1 / 1;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            border:
+                clamp(4px, 0.5vw, 7px) solid #ffffff;
+
+            background: #eef8ff;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* =========================================
+           PLAYER DATA
+        ========================================= */
+
+        .player-info {
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+        .player-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            width: 100%;
+            min-width: 0;
+            margin-bottom: clamp(3px, 0.5vh, 8px);
+            gap: clamp(8px, 1.2vw, 16px);
+        }
+
+        .bib {
+            margin-bottom: 0;
+            margin-left: 0;
+            font-size:
+                clamp(30px, 3.6vw, 48px);
+
+            font-weight: 900;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            text-shadow:
+                2px 2px 2px rgba(0, 0, 0, 0.22);
+            flex-shrink: 1;
+            min-width: 0;
+        }
+
+        .rank-time {
+            margin-left: auto;
+            margin-right: 3%;
+            flex-shrink: 0;
+            font-size:
+                clamp(30px, 3.6vw, 48px);
+            font-weight: 900;
+            color: #ffffff;
+            white-space: nowrap;
+            text-shadow:
+                2px 2px 2px rgba(0, 0, 0, 0.22);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
+            line-height: 1;
+        }
+
+        .player-name {
+            margin-left: 0;
+
+            font-size:
+                clamp(48px, 4.5vw, 78px);
+
+            font-weight: 800;
+
+            line-height: 1.3;
+
+            white-space: nowrap;
+
+            overflow: visible;
+
+            text-shadow:
+                2px 3px 1px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+
+        /* =========================================
+           TIME
+        ========================================= */
+
+        .time-wrapper {
+            display: flex;
+            align-items: top;
+            justify-content: flex-end;
+
+            gap: 12px;
+
+            white-space: nowrap;
+
+            text-align: right;
+        }
+
+        .time-label {
+            margin-bottom: 2px;
+
+            font-size:
+                clamp(30px, 2.4vw, 48px);
+
+            font-weight: 800;
+        }
+
+        .time {
+            font-size:
+                clamp(48px, 4.8vw, 72px);
+
+            line-height: 1;
+
+            font-weight: 900;
+
+            white-space: nowrap;
+
+            text-shadow:
+                3px 4px 1px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* =========================================
+           EMPTY
+        ========================================= */
+
+        .empty-message {
+            flex: 1;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            font-size:
+                clamp(26px, 4vw, 48px);
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           TRANSITION
+        ========================================= */
+
+        .results.fade-out,
+        .dashboard-header.fade-out {
+            opacity: 0;
+
+            transform:
+                translateY(12px);
+        }
+
+        .results,
+        .dashboard-header {
+            transition:
+                opacity 0.35s ease,
+                transform 0.35s ease;
+        }
+
+
+        /* =========================================
+           LANDSCAPE
+           TV / Monitor แนวนอน
+        ========================================= */
+
+        @media (orientation: landscape) {
+
+            /* ==========================================
+               CONTAINER
+            ========================================== */
+
+            .container {
+                width: 100%;
+                max-width: 100%;
+                padding: clamp(10px, 1.8vh, 24px) 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+
+
+            /* ==========================================
+               LOGO (ซ่อนใน Landscape เนื่องจากมีใน BG แล้ว)
+            ========================================== */
+
+            .event-logo {
+                display: none;
+            }
+
+
+            /* ==========================================
+               HEADER
+            ========================================== */
+
+            .dashboard-header {
+                margin-top: 150px;
+                padding-top: clamp(30px, 5vh, 75px);
+                margin-bottom: clamp(14px, 2vh, 24px);
+                text-align: center;
+            }
+
+            .distance-wrapper {
+                display: flex;
+                justify-content: center;
+                margin-bottom: clamp(12px, 1.6vh, 20px);
+            }
+
+            .distance-badge {
+                min-width: unset;
+                padding: clamp(8px, 1vh, 12px) clamp(32px, 3.2vw, 52px);
+                border: 6px solid #ffffff;
+                border-radius: 9999px;
+                background: #ff5bb6;
+                color: #ffffff;
+                font-size: clamp(42px, 1.8vw, 50px);
+                font-weight: 800;
+                line-height: 1.2;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+            }
+
+
+            /* ==========================================
+               CATEGORY — Type + DisplayName บรรทัดเดียว
+            ========================================== */
+
+            .category-wrapper {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                gap: 0.45em;
+                flex-wrap: nowrap;
+                white-space: nowrap;
+                margin: 0;
+            }
+
+            .category-type {
+                font-size: clamp(54px, 2.2vw, 64px);
+                font-weight: 800;
+                color: #ffffff;
+                margin-bottom: 0;
+                white-space: nowrap;
+                line-height: 1.2;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .category-title {
+                font-size: clamp(54px, 2.2vw, 64px);
+                font-weight: 800;
+                color: #ffffff;
+                margin: 0;
+                white-space: nowrap;
+                line-height: 1.2;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+
+            /* ==========================================
+               RESULTS — ranking: 1 คอลัมน์ กึ่งกลางจอ
+            ========================================== */
+
+            .results {
+                display: flex;
+                flex-direction: column;
+                gap: clamp(8px, 1.2vh, 14px);
+                width: min(60%, 1200px);
+                margin: 0 auto;
+            }
+
+            .results.overall-mode {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: min(85%, 1500px);
+            }
+
+
+            /* ==========================================
+               OVERALL CARD
+            ========================================== */
+
+            .overall-card {
+                margin-top: clamp(125px, 15vh, 195px);
+                padding: clamp(144px, 19vh, 216px) clamp(37px, 4.7vw, 74px) clamp(36px, 4.5vh, 66px);
+                max-width: 1060px;
+                min-height: clamp(360px, 40vh, 480px);
+            }
+
+            .overall-profile-image {
+                width: clamp(234px, 28vh, 358px);
+            }
+
+            .overall-bib {
+                font-size: clamp(41px, 4.3vw, 68px);
+                margin-bottom: clamp(6px, 1.2vh, 16px);
+            }
+
+            .overall-name {
+                font-size: clamp(35px, 3.5vw, 56px);
+                margin-bottom: clamp(16px, 2.4vh, 32px);
+            }
+
+            .overall-time {
+                font-size: clamp(66px, 7vw, 113px);
+            }
+
+
+            /* ==========================================
+               RESULT CARD (3D Capsule Button Look)
+            ========================================== */
+
+            .result-card {
+                position: relative;
+                display: grid;
+                grid-template-columns:
+                    clamp(68px, 6.5vw, 99px) clamp(81px, 7.8vh, 104px) minmax(0, 1fr);
+                align-items: center;
+                gap: clamp(16px, 1.8vw, 26px);
+                padding: clamp(10px, 1.3vh, 18px) clamp(21px, 2.3vw, 34px);
+                border-radius: clamp(16px, 1.6vw, 24px);
+                background: linear-gradient(90deg, #ffd748 0%, #ffad28 35%, #ff7314 70%, #ff5500 100%);
+                box-shadow: 0 5px 16px rgba(0, 0, 0, 0.24);
+                overflow: hidden;
+                flex: 0 0 clamp(99px, 11.7vh, 133px);
+                min-height: clamp(99px, 11.7vh, 133px);
+            }
+
+            /* แถบไฮไลต์สะท้อนแสงด้านขวา */
+            .result-card::after {
+                content: "";
+                position: absolute;
+                right: 9px;
+                top: 14%;
+                bottom: 14%;
+                width: clamp(7px, 0.7vw, 10px);
+                border-radius: 999px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.45) 100%);
+                filter: blur(1.5px);
+                pointer-events: none;
+            }
+
+            /* แถบแสงสะท้อนโค้งด้านซ้าย */
+            .result-card::before {
+                content: "";
+                position: absolute;
+                left: 9px;
+                top: 14%;
+                bottom: 14%;
+                width: clamp(5px, 0.5vw, 8px);
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.4);
+                filter: blur(2px);
+                pointer-events: none;
+            }
+
+
+            /* ==========================================
+               RANK (3D Dimension Numbers)
+            ========================================== */
+
+            .rank {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: clamp(62px, 6.5vw, 94px);
+                line-height: 1;
+                font-weight: 900;
+                text-align: center;
+                filter: none;
+            }
+
+            /* Rank 1: แดงอมส้ม มีมิติเงาขาว 3D */
+            .result-card.rank-1 .rank {
+                color: #ff4d5a;
+                text-shadow: 2.5px 2.5px 0px #ffffff, 3px 3px 3px rgba(0, 0, 0, 0.18);
+            }
+
+            /* Rank 2: ม่วงลาเวนเดอร์ มีมิติเงาสีม่วงเข้ม 3D */
+            .result-card.rank-2 .rank {
+                color: #b784ff;
+                text-shadow: 2.5px 2.5px 0px #4a1fa8, 3px 3px 3px rgba(0, 0, 0, 0.22);
+            }
+
+            /* Rank 3: ฟ้าสว่าง มีมิติเงาสีน้ำเงินเข้ม 3D */
+            .result-card.rank-3 .rank {
+                color: #6ee2ff;
+                text-shadow: 2.5px 2.5px 0px #1a3cb0, 3px 3px 3px rgba(0, 0, 0, 0.22);
+            }
+
+            /* Rank 4: ขาว มีมิติเงาสีส้มทอง 3D */
+            .result-card.rank-4 .rank {
+                color: #ffffff;
+                text-shadow: 2.5px 2.5px 0px #ab6514, 3px 3px 4px rgba(0, 0, 0, 0.25);
+            }
+
+            /* Rank 5: ขาว มีมิติเงาสีส้มทอง 3D */
+            .result-card.rank-5 .rank {
+                color: #ffffff;
+                text-shadow: 2.5px 2.5px 0px #ab6514, 3px 3px 4px rgba(0, 0, 0, 0.25);
+            }
+
+
+            /* ==========================================
+               PROFILE IMAGE
+            ========================================== */
+
+            .profile-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .profile-image {
+                width: clamp(78px, 7.8vh, 101px);
+                height: clamp(78px, 7.8vh, 101px);
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3.5px solid #ffffff;
+                background: #dcf1ff;
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+                margin-left: 0;
+            }
+
+
+            /* ==========================================
+               PLAYER INFO
+            ========================================== */
+
+            .player-info {
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: left;
+            }
+
+            .player-header-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                width: 100%;
+                min-width: 0;
+                margin-bottom: 3px;
+                gap: clamp(8px, 1vw, 16px);
+            }
+
+            .bib {
+                font-size: clamp(28px, 2.6vw, 38px);
+                font-weight: 900;
+                color: #ffffff;
+                margin-left: 0;
+                margin-bottom: 0;
+                letter-spacing: 0.5px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex-shrink: 1;
+                min-width: 0;
+            }
+
+            .rank-time {
+                margin-left: auto;
+                margin-right: 3%;
+                flex-shrink: 0;
+                font-size: clamp(28px, 2.6vw, 38px);
+                font-weight: 900;
+                color: #ffffff;
+                letter-spacing: 0.5px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+                line-height: 1;
+            }
+
+            .bib:not([data-has-bib-prefix="true"])::before {
+                content: "BIB : ";
+            }
+
+            .player-name {
+                font-size: clamp(35px, 3.3vw, 48px);
+                font-weight: 800;
+                line-height: 1.2;
+                color: #ffffff;
+                margin-left: 0;
+                text-shadow: 1px 2px 2px rgba(0, 0, 0, 0.25);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+
+            /* ==========================================
+               TIME (ซ่อนใน Ranking Mode แนวนอน)
+            ========================================== */
+
+            .time-wrapper {
+                display: none;
+            }
+        }
+
+
+        /* =========================================
+           PORTRAIT
+           TV แนวตั้ง 1080 x 1920
+        ========================================= */
+
+        @media (orientation: portrait) {
+
+            /* จัด layout ให้พอดีเต็มหน้าจอแนวตั้ง 1080x1920 ไม่ล้นจอ */
+            .container {
+                width: 92%;
+                max-width: 980px;
+                height: 100vh;
+                max-height: 100vh;
+                padding: 16px 0 20px 0;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                box-sizing: border-box;
+            }
+
+            .event-logo {
+                display: none;
+            }
+
+            /* Header ปรับระยะห่างให้พอดีใต้ Logo ของ Background (เลื่อนลงมาอีก 10% และขยายขนาดใหญ่ขึ้น 20%) */
+            .dashboard-header {
+                flex-shrink: 0;
+                text-align: center;
+                margin-top: clamp(260px, 15vh, 290px);
+                margin-bottom: clamp(14px, 1.2vh, 20px);
+            }
+
+            .distance-wrapper {
+                display: flex;
+                justify-content: center;
+                margin-bottom: clamp(12px, 1vh, 18px);
+            }
+
+            .distance-badge {
+                min-width: unset;
+                padding: clamp(10px, 1vh, 15px) clamp(40px, 4.8vw, 60px);
+                border: clamp(6px, 0.7vw, 8.5px) solid #ffffff;
+                border-radius: 9999px;
+                background: #f55abe;
+                color: #ffffff;
+                font-size: clamp(40px, 3.8vw, 50px);
+                font-weight: 800;
+                line-height: 1.15;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+            }
+
+            .category-wrapper {
+                text-align: center;
+            }
+
+            .category-type {
+                font-size: clamp(46px, 5vw, 58px);
+                font-weight: 800;
+                line-height: 1.2;
+                margin-bottom: 3px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            .category-title {
+                font-size: clamp(46px, 5vw, 58px);
+                font-weight: 800;
+                line-height: 1.2;
+                margin: 0;
+                min-height: auto;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            }
+
+            /* พื้นที่แสดงผลการแข่งขัน: ยืดหยุ่นตามความสูงหน้าจอ ไม่ล้น */
+            .results {
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: clamp(10px, 0.9vh, 15px);
+                width: 100%;
+            }
+
+            /* OVERALL MODE */
+            .results.overall-mode {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .results.overall-mode .overall-card {
+                width: min(94%, 984px);
+                max-width: 984px;
+                margin: clamp(110px, 12vh, 165px) auto auto auto;
+                min-height: clamp(460px, 28vh, 580px);
+                padding: clamp(145px, 16vh, 205px) clamp(34px, 4.2vw, 60px) clamp(45px, 5vh, 70px);
+                border-radius: clamp(28px, 3.6vw, 48px);
+            }
+
+            .results.overall-mode .overall-profile-image {
+                width: clamp(240px, 26.4vw, 336px);
+            }
+
+            .results.overall-mode .overall-bib {
+                font-size: clamp(58px, 6.6vw, 86px);
+                margin-bottom: clamp(10px, 1.2vh, 20px);
+            }
+
+            .results.overall-mode .overall-name {
+                font-size: clamp(46px, 5vw, 67px);
+                margin-bottom: clamp(16px, 2.4vh, 28px);
+            }
+
+            .results.overall-mode .overall-time {
+                font-size: clamp(67px, 7.8vw, 110px);
+            }
+
+            /* การ์ดอันดับ Ranking: สัดส่วนพอดี 5 อันดับในหน้าเดียว */
+            .result-card {
+                position: relative;
+                width: 100%;
+                flex: 1 1 0;
+                min-height: 0;
+                max-height: clamp(165px, 10.5vh, 205px);
+
+                display: grid;
+                grid-template-columns: clamp(65px, 7vw, 85px) clamp(105px, 11vw, 135px) minmax(0, 1fr);
+                align-items: center;
+                gap: clamp(14px, 1.6vw, 22px);
+
+                padding: clamp(10px, 1vh, 15px) clamp(22px, 2.5vw, 32px) clamp(10px, 1vh, 15px) clamp(18px, 2vw, 26px);
+                border-radius: clamp(18px, 2vw, 26px);
+                background: linear-gradient(90deg, #ffd748 0%, #ffad28 35%, #ff7314 70%, #ff5500 100%);
+                box-shadow: 0 5px 16px rgba(0, 0, 0, 0.22);
+                overflow: hidden;
+            }
+
+            /* แถบไฮไลต์สะท้อนแสง */
+            .result-card::after {
+                content: "";
+                position: absolute;
+                right: 9px;
+                top: 14%;
+                bottom: 14%;
+                width: clamp(7px, 0.7vw, 10px);
+                border-radius: 999px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.45) 100%);
+                filter: blur(1.5px);
+                pointer-events: none;
+            }
+
+            .result-card::before {
+                content: "";
+                position: absolute;
+                left: 9px;
+                top: 14%;
+                bottom: 14%;
+                width: clamp(5px, 0.5vw, 8px);
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.4);
+                filter: blur(2px);
+                pointer-events: none;
+            }
+
+            /* ตัวเลขอันดับ 3D Dimension */
+            .rank {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: clamp(74px, 8.2vw, 100px);
+                line-height: 1;
+                font-weight: 900;
+                text-align: center;
+                filter: none;
+            }
+
+            .result-card.rank-1 .rank {
+                color: #ff4d5a;
+                text-shadow: 2.5px 2.5px 0px #ffffff, 3px 3px 3px rgba(0, 0, 0, 0.18);
+            }
+
+            .result-card.rank-2 .rank {
+                color: #b784ff;
+                text-shadow: 2.5px 2.5px 0px #4a1fa8, 3px 3px 3px rgba(0, 0, 0, 0.22);
+            }
+
+            .result-card.rank-3 .rank {
+                color: #6ee2ff;
+                text-shadow: 2.5px 2.5px 0px #1a3cb0, 3px 3px 3px rgba(0, 0, 0, 0.22);
+            }
+
+            .result-card.rank-4 .rank {
+                color: #ffffff;
+                text-shadow: 2.5px 2.5px 0px #ab6514, 3px 3px 4px rgba(0, 0, 0, 0.25);
+            }
+
+            .result-card.rank-5 .rank {
+                color: #ffffff;
+                text-shadow: 2.5px 2.5px 0px #ab6514, 3px 3px 4px rgba(0, 0, 0, 0.25);
+            }
+
+            /* รูปโปรไฟล์นักวิ่ง */
+            .profile-wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .profile-image {
+                width: clamp(100px, 11vw, 134px);
+                height: clamp(100px, 11vw, 134px);
+                aspect-ratio: 1 / 1;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid #ffffff;
+                background: #dcf1ff;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                margin-left: 0;
+            }
+
+            /* ข้อมูลผู้แข่งขัน - ข้อความขนาดใหญ่ คมชัด โดดเด่น */
+            .player-info {
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: left;
+            }
+
+            .player-header-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                width: 100%;
+                min-width: 0;
+                margin-bottom: clamp(4px, 0.5vh, 8px);
+                gap: clamp(10px, 1.5vw, 20px);
+            }
+
+            .bib {
+                font-size: clamp(40px, 4.4vw, 58px);
+                font-weight: 900;
+                color: #ffffff;
+                margin-left: 0;
+                margin-bottom: 0;
+                letter-spacing: 0.8px;
+                line-height: 1.1;
+                text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.35);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex-shrink: 1;
+                min-width: 0;
+            }
+
+            .rank-time {
+                margin-left: auto;
+                margin-right: 3%;
+                flex-shrink: 0;
+                font-size: clamp(40px, 4.4vw, 58px);
+                font-weight: 900;
+                color: #ffffff;
+                letter-spacing: 0.8px;
+                line-height: 1.1;
+                text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.35);
+                font-variant-numeric: tabular-nums;
+                white-space: nowrap;
+            }
+
+            .player-name {
+                font-size: clamp(42px, 4.5vw, 56px);
+                font-weight: 800;
+                line-height: 1.2;
+                color: #ffffff;
+                margin-left: 0;
+                text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.25);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="dashboard">
+
+        <div class="container">
+
+
+            <!-- ==================================
+                 LOGO
+                 ถ้ามี Logo จริง ให้วางไฟล์
+                 /images/event-logo.png
+            =================================== -->
+
+            <div class="event-logo">
+
+                <img src="/images/event-logo.png" alt="" onerror="
+                        this.style.display='none';
+                    ">
+
+            </div>
+
+
+            <!-- ==================================
+                 HEADER
+            =================================== -->
+
+            <header id="dashboardHeader" class="dashboard-header">
+
+
+
+
+                <div id="distanceWrapper" class="distance-wrapper">
+
+                    <div id="distanceBadge" class="distance-badge">
+                        ผลการแข่งขัน
+                    </div>
+
+                </div>
+
+
+                <div class="category-wrapper">
+
+                    <div id="categoryType" class="category-type">
+                        Loading...
+                    </div>
+
+                    <div id="categoryTitle" class="category-title">
+                        Loading...
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- ==================================
+                 RESULTS
+            =================================== -->
+
+            <section id="results" class="results"></section>
+
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =========================================
+           CONFIG
+        ========================================= */
+
+        const API_URL =
+            "/api/results";
+
+
+        // เช็กข้อมูลใหม่ทุก 1 วินาที
+        const DATA_REFRESH_INTERVAL =
+            1000;
+
+
+        // เปลี่ยนรุ่นทุก 6 วินาที
+        const CATEGORY_CHANGE_INTERVAL =
+            6000;
+
+
+        /*
+         * ตอนนี้ Distance ยังไม่มีอยู่ใน Excel
+         * จึงกำหนดตรงนี้ก่อน
+         *
+         * ภายหลังสามารถเพิ่ม Column/Cell
+         * จาก Excel ได้
+         */
+
+        const RACE_DISTANCE =
+            "ผลการแข่งขัน";
+
+
+        /* =========================================
+           STATE
+        ========================================= */
+
+        let raceData = [];
+
+        let currentCategoryIndex = 0;
+
+        let currentVersion = null;
+
+        let isTransitioning = false;
+
+
+        /* =========================================
+           LOAD DATA
+        ========================================= */
+
+        async function loadRaceData() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_URL,
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "API Error: "
+                        + response.status
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                /* ------------------------------
+                   ไม่มีข้อมูลใหม่
+                ------------------------------ */
+
+                if (
+                    data.version
+                    === currentVersion
+                ) {
+
+                    return;
+                }
+
+
+                /* ------------------------------
+                   จำ Category ที่เปิดอยู่
+                ------------------------------ */
+
+                let currentSheetName = null;
+
+
+                if (
+                    raceData.length > 0 &&
+                    raceData[
+                    currentCategoryIndex
+                    ]
+                ) {
+
+                    currentSheetName =
+                        raceData[
+                            currentCategoryIndex
+                        ].sheet_name;
+
+                }
+
+
+                /* ------------------------------
+                   รับ Version ใหม่
+                ------------------------------ */
+
+                currentVersion =
+                    data.version;
+
+
+                raceData =
+                    data.categories || [];
+
+
+                /* ------------------------------
+                   ไม่มีรุ่น
+                ------------------------------ */
+
+                if (
+                    raceData.length === 0
+                ) {
+
+                    currentCategoryIndex = 0;
+
+                    renderEmpty();
+
+                    return;
+                }
+
+
+                /* ------------------------------
+                   พยายามให้อยู่ Category เดิม
+                   แม้ Excel มีการ Update
+                ------------------------------ */
+
+                if (currentSheetName) {
+
+                    const foundIndex =
+                        raceData.findIndex(
+                            category =>
+
+                                category.sheet_name
+                                === currentSheetName
+                        );
+
+
+                    if (
+                        foundIndex !== -1
+                    ) {
+
+                        currentCategoryIndex =
+                            foundIndex;
+
+                    }
+
+                    else {
+
+                        currentCategoryIndex = 0;
+
+                    }
+
+                }
+
+
+                /* ------------------------------
+                   กัน Index เกิน
+                ------------------------------ */
+
+                if (
+                    currentCategoryIndex
+                    >= raceData.length
+                ) {
+
+                    currentCategoryIndex = 0;
+
+                }
+
+
+                renderCurrentCategory();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Cannot load race data:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =========================================
+           ESCAPE HTML
+        ========================================= */
+
+        function escapeHTML(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+
+            }
+
+
+            return String(value)
+
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =========================================
+           FORMAT TIME
+        ========================================= */
+
+        function formatRaceTime(value) {
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+                return "";
+            }
+
+            let str = String(value).trim();
+
+            // ถ้าขึ้นต้นด้วย 00: เช่น 00:59:59 ให้แปลงเป็น 59:59 ตามรูปแบบ นาที:วินาที
+            if (/^00:\d{2}:\d{2}$/.test(str)) {
+                str = str.substring(3);
+            }
+
+            return escapeHTML(str);
+        }
+
+
+        /* =========================================
+           IMAGE CANDIDATES & FALLBACK
+        ========================================= */
+
+        function getCandidateImages(bib) {
+            if (!bib) return ['/images/system/default.jpg'];
+            const b = String(bib).trim();
+            const withDash = b.replace(/_/g, '-');
+            const withUnderscore = b.replace(/-/g, '_');
+
+            const set = new Set();
+            // รองรับทั้ง .png, .jpg, .jpeg, .webp และเครื่องหมายขีดล่าง _ กับขีดกลาง -
+            set.add(`/images/runners/${b}.png`);
+            set.add(`/images/runners/${b}.jpg`);
+            set.add(`/images/runners/${withUnderscore}.png`);
+            set.add(`/images/runners/${withUnderscore}.jpg`);
+            set.add(`/images/runners/${withDash}.png`);
+            set.add(`/images/runners/${withDash}.jpg`);
+            set.add(`/images/runners/${b}.jpeg`);
+            set.add(`/images/runners/${b}.webp`);
+            set.add('/images/system/default.jpg');
+
+            return Array.from(set);
+        }
+
+        function handleImageError(img) {
+            let fallbacks = img._fallbacks;
+            if (!fallbacks && img.dataset.fallbacks) {
+                try {
+                    fallbacks = JSON.parse(img.dataset.fallbacks);
+                } catch (e) {
+                    fallbacks = [];
+                }
+            }
+            if (fallbacks && fallbacks.length > 0) {
+                const nextSrc = fallbacks.shift();
+                img._fallbacks = fallbacks;
+                img.dataset.fallbacks = JSON.stringify(fallbacks);
+                img.src = nextSrc;
+            } else {
+                img.onerror = null;
+                img.src = '/images/system/default.jpg';
+            }
+        }
+
+
+        /* =========================================
+           RENDER CATEGORY
+        ========================================= */
+
+        function renderCurrentCategory() {
+
+            if (
+                raceData.length === 0
+            ) {
+
+                renderEmpty();
+
+                return;
+            }
+
+
+            const category =
+                raceData[
+                currentCategoryIndex
+                ];
+
+
+            const categoryType =
+                document.getElementById(
+                    "categoryType"
+                );
+
+            const categoryTitle =
+                document.getElementById(
+                    "categoryTitle"
+                );
+
+
+            const resultsContainer =
+                document.getElementById(
+                    "results"
+                );
+
+
+            /* ------------------------------
+               TITLE
+               Portrait : Type บรรทัดบน, DisplayName บรรทัดล่าง
+               Landscape: Type + DisplayName บรรทัดเดียวกัน (CSS flex-row)
+            ------------------------------ */
+
+            if (categoryType) {
+                if (category.type) {
+                    categoryType.textContent =
+                        category.type;
+                    categoryType.style.display = "";
+                } else {
+                    categoryType.textContent = "";
+                    categoryType.style.display = "none";
+                }
+            }
+
+            categoryTitle.textContent =
+                category.display_name || "";
+
+
+            /* ------------------------------
+               DISTANCE
+            ------------------------------ */
+
+            document.getElementById(
+                "distanceBadge"
+            ).textContent =
+                RACE_DISTANCE;
+
+
+            /* ------------------------------
+               RESULTS
+            ------------------------------ */
+
+            resultsContainer.innerHTML = "";
+
+
+            const results =
+                category.results || [];
+
+
+            if (
+                results.length === 0
+            ) {
+
+                resultsContainer.innerHTML = `
+
+                    <div class="empty-message">
+
+                        ยังไม่มีผลการแข่งขัน
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            const layoutMode =
+                (category.layout_mode || "ranking")
+                    .trim()
+                    .toLowerCase();
+
+            if (layoutMode === "overall") {
+
+                resultsContainer.classList.add("overall-mode");
+
+                const rank1 =
+                    results.find(r => r.rank === 1) || results[0];
+
+                const bib =
+                    escapeHTML(
+                        rank1.bib
+                    );
+
+                const name =
+                    escapeHTML(
+                        rank1.name
+                    );
+
+                const time =
+                    formatRaceTime(
+                        rank1.time
+                    ) || "-";
+
+                const candidates =
+                    getCandidateImages(rank1.bib);
+
+                const primaryImage =
+                    candidates[0];
+
+                const fallbackAttr =
+                    JSON.stringify(candidates.slice(1)).replaceAll('"', '&quot;');
+
+                const card =
+                    document.createElement(
+                        "article"
+                    );
+
+                card.className =
+                    "overall-card";
+
+                card.innerHTML = `
+
+                    <div class="overall-profile-wrapper">
+
+                        <img
+                            class="overall-profile-image"
+                            src="${primaryImage}"
+                            data-fallbacks="${fallbackAttr}"
+                            alt="${name}"
+                            onerror="handleImageError(this)"
+                        >
+
+                    </div>
+
+                    <div class="overall-bib">
+                        ${bib}
+                    </div>
+
+                    <div class="overall-name">
+                        ${name}
+                    </div>
+
+                    <div class="overall-time">
+                        ${time}
+                    </div>
+
+                `;
+
+                resultsContainer.appendChild(card);
+
+            } else {
+
+                resultsContainer.classList.remove("overall-mode");
+
+                const displayResults =
+                    results.slice(0, 5);
+
+                displayResults.forEach(
+                    result => {
+
+                        const card =
+                            document.createElement(
+                                "article"
+                            );
+
+                        card.className =
+                            "result-card "
+                            + `rank-${result.rank}`;
+
+                        const bib =
+                            escapeHTML(
+                                result.bib
+                            );
+
+                        const hasBibPrefix =
+                            /^bib\s*:/i.test(String(result.bib || "").trim());
+
+                        const name =
+                            escapeHTML(
+                                result.name
+                            );
+
+                        const time =
+                            formatRaceTime(
+                                result.time
+                            );
+
+                        const candidates =
+                            getCandidateImages(result.bib);
+
+                        const primaryImage =
+                            candidates[0];
+
+                        const fallbackAttr =
+                            JSON.stringify(candidates.slice(1)).replaceAll('"', '&quot;');
+
+                        card.innerHTML = `
+
+                            <div class="rank">
+
+                                ${result.rank}
+
+                            </div>
+
+
+                            <div
+                                class="profile-wrapper"
+                            >
+
+                                <img
+
+                                    class="
+                                        profile-image
+                                    "
+
+                                    src="${primaryImage}"
+                                    data-fallbacks="${fallbackAttr}"
+                                    alt="${name}"
+                                    onerror="handleImageError(this)"
+
+                                >
+
+                            </div>
+
+
+                            <div
+                                class="player-info"
+                            >
+
+                                <div class="player-header-row">
+
+                                    <div class="bib" data-has-bib-prefix="${hasBibPrefix}">
+
+                                        ${bib}
+
+                                    </div>
+
+                                    <div class="rank-time">
+
+                                        ${time}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        player-name
+                                    "
+                                >
+
+                                    ${name}
+
+                                </div>
+
+
+                            </div>
+
+                        `;
+
+                        resultsContainer
+                            .appendChild(
+                                card
+                            );
+
+                    }
+                );
+
+            }
+
+        }
+
+
+        /* =========================================
+           EMPTY
+        ========================================= */
+
+        function renderEmpty() {
+
+            const categoryType =
+                document.getElementById(
+                    "categoryType"
+                );
+
+            if (categoryType) {
+                categoryType.textContent = "";
+                categoryType.style.display = "none";
+            }
+
+            document.getElementById(
+                "categoryTitle"
+            ).textContent =
+                "Waiting for race results";
+
+
+            document.getElementById(
+                "results"
+            ).innerHTML = `
+
+                <div class="empty-message">
+
+                    No race data available
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =========================================
+           NEXT CATEGORY
+        ========================================= */
+
+        function nextCategory() {
+
+            if (
+                raceData.length <= 1 ||
+                isTransitioning
+            ) {
+
+                return;
+            }
+
+
+            isTransitioning = true;
+
+
+            const header =
+                document.getElementById(
+                    "dashboardHeader"
+                );
+
+
+            const results =
+                document.getElementById(
+                    "results"
+                );
+
+
+            /* Fade Out */
+
+            header.classList.add(
+                "fade-out"
+            );
+
+            results.classList.add(
+                "fade-out"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    currentCategoryIndex++;
+
+
+                    if (
+                        currentCategoryIndex
+                        >= raceData.length
+                    ) {
+
+                        currentCategoryIndex = 0;
+
+                    }
+
+
+                    renderCurrentCategory();
+
+
+                    /* Fade In */
+
+                    requestAnimationFrame(
+                        () => {
+
+                            header.classList.remove(
+                                "fade-out"
+                            );
+
+                            results.classList.remove(
+                                "fade-out"
+                            );
+
+
+                            isTransitioning = false;
+
+                        }
+                    );
+
+                },
+
+                350
+            );
+
+        }
+
+
+        /* =========================================
+           START
+        ========================================= */
+
+        loadRaceData();
+
+
+        /* Realtime */
+
+        setInterval(
+            loadRaceData,
+            DATA_REFRESH_INTERVAL
+        );
+
+
+        /* เปลี่ยนรุ่น */
+
+        setInterval(
+            nextCategory,
+            CATEGORY_CHANGE_INTERVAL
+        );
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+วิธีรันโปรแกรม RacePoint สามารถรันได้ 2 วิธี
+1. ผ่าน cmd และ Antigavity IDE
+- ผ่าน cmd เข้าโฟลเดอร์ RaceDashboard จากนั้น คลุม path แล้วกด cmd  
+ใส่คำสั่ง python -m uvicorn main:app --reload
+- เมื่อเข้าผ่าน Antigavity แล้ว เปิดโฟลเดอร์ RaceDashboard จากนั้นเปิด Terminal 
+และใส่คำสั่ง python -m uvicorn main:app --reload
+2. เมื่อรันคำสั่งแล้วเปิดบราวเซอร์(Chrome) จากนั้นเปิดลิงก์ http://127.0.0.1:8000/dashboard 
+3. เมื่อรันคำสั่ง Excel จะปรากฏขึ้นมาเอง
+
+วิธีการใช้งานโปรแกรม
+ส่วนของ Excel
+1. เมื่อเปิด Excel จะเห็นหน้า Config จะเป็นหน้ากำหนด ประเภท การแสดงผลของชื่อขึ้นจอ และโหมดต่างๆ 
+หากมีการตั้งไว้แล้ว ห้ามเปลี่ยนแปลงเด็ดขาด
+2. หากต้องการใส่ข้อมูลนักวิ่งให้ไปที่ชีทต่างๆที่แยกตามรุ่นอายุเรียบร้อยแล้ว ข้อมูลจะอัปเดตขึ้นระบบอัตโนมัติ
+
+ส่วนของการใส่ภาพนักวิ่ง
+1. เมื่อถ่ายภาพนักวิ่งได้แล้ว นำส่งภาพเข้าโฟลเดอร์
+2. เปลี่ยนชื่อนักวิ่งให้ตรงกับ BIB ของนักวิ่ง ต้องตรงกันเป๊ะกับชื่อ BIB ใน Excel ทุกตัวอักษร 
+
+
+เครื่องที่ 1 จำลอง
+C:\RaceDashboardV3\
+└─ data\
+   ├─ race_10_5KM.xlsx
+   └─ race_results.xlsx
+
+เครื่องที่ 2 จำลอง
+C:\RaceNotebook2\
+└─ data\
+   └─ race_5KM.xlsx
+
+CMD 1 — ระบบกลาง เครื่องที่ 1
+cd /d C:\RaceDashboardV3
+python sync_hub.py
+
+CMD 2 — จำลองเครื่องที่ 2
+cd /d C:\RaceNotebook2
+python sender_5km_lan.py
+
+CMD 3 — Dashboard
+cd /d C:\RaceDashboardV3
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
+
+ถ้าอยากเช็กข้อมูลดิบจากระบบ ใช้:
+http://127.0.0.1:8000/api/results
